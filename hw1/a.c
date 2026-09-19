@@ -11,8 +11,8 @@ print_array(int *arr, int size)
 	 * }
 	 * printf("\n");
      */
-
-	for (int *p = arr; p < arr + size; p++)
+	int *p;
+	for (p = arr; p < arr + size; p++)
 		printf("%d ", *p);
 	
 	printf("\n");
