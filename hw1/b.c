@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void
 print_matrix(int *matrix, int sizeX, int sizeY)
@@ -35,10 +36,9 @@ avg_matrix(int *matrix, int sizeX, int sizeY, int *p)
 }
 
 int 
-findmax(int *p, int r, int c, int *pr, int *pc)
+find_max(int *p, int r, int c, int *pr, int *pc)
 {
 	int *i, *max = p;
-	int imax = 0;
 
 	for (i = p; i < p + r * c; i++) {
 		if (*i > *max) {
@@ -53,23 +53,45 @@ findmax(int *p, int r, int c, int *pr, int *pc)
 }
 
 void
-replace_maxavg(int *matrix, int sizeY, int maxri, double maxravg)
+replace_max_avg(int *matrix, int sizeY, int max_row_i, double max_row_avg)
 {
-	int trunc_avg = (int)maxravg;
+	int trunc_avg = (int)max_row_avg;
 
-	int *targetrl = matrix + maxri * sizeY; 
-	int *targetrr = targetrl + sizeY;       
+	int *target_row_l = matrix + max_row_i * sizeY; 
+	int *target_row_r = target_row_l + sizeY;       
 
 	int *p;
-	for (p = targetrl; p < targetrr; p++) {
+	for (p = target_row_l; p < target_row_r; p++) {
 		*p = trunc_avg;
 	}
 }
 
 int
+find_max_diff(int *matrix, int sizeX, int sizeY)
+{
+	int curr_diff, max_diff = 0;
+	int *row_l, *row_r;
+
+
+	for (int i = 0; i < sizeX; i++) {
+		row_l = matrix + i * sizeY;
+		row_r = row_l + sizeY - 1;
+
+		for (int *c = row_l; c < row_r; c++) {
+			curr_diff = abs(*c - *(c + 1));
+			if (curr_diff > max_diff) {
+				max_diff = curr_diff;
+			}
+		}
+	}
+	return max_diff;
+}
+
+
+int
 main(void)
 {
-	int i, j, r, c, counter;
+	int i, j, r, c;
 
 	scanf("%d%d", &r, &c);
 
@@ -79,39 +101,41 @@ main(void)
 		for (j = 0; j < c; j++)
 			scanf("%d", &tmatrix[i][j]);
 
-	int rmaxt = 0, cmaxt = 0;
-	int biggerthanavg = 0;
+	int row_max_t = 0, col_max_t = 0;
+	int bigger_than_avg = 0;
 
-	int maxt = findmax(&tmatrix[0][0], r, c, &rmaxt, &cmaxt);
-	double avgt = avg_matrix((int*)tmatrix, r, c, &biggerthanavg);
+	int max_t = find_max(&tmatrix[0][0], r, c, &row_max_t, &col_max_t);
+	double avg_t = avg_matrix((int*)tmatrix, r, c, &bigger_than_avg);
 
-	int maxri = 0;
-	double currravg, maxravg = -1e9;
+	int max_row_i = 0;
+	double curr_row_avg, max_row_avg = -1e9;
 
 	for (i = 0; i < r; i++) {
 		j = 0;
 		
-		currravg = avg_matrix(&tmatrix[i][0], 1, c, &j);
+		curr_row_avg = avg_matrix(&tmatrix[i][0], 1, c, &j);
 
-		if (currravg > maxravg) {
-			maxravg = currravg;
-			maxri = i;
+		if (curr_row_avg > max_row_avg) {
+			max_row_avg = curr_row_avg;
+			max_row_i = i;
 		}
 	}
 
 	printf("Исходная карта:\n");
 	print_matrix((int*)tmatrix, r, c);
-	printf("Максимальная температура: %d\n", maxt);
-	printf("Строка: %d\n", rmaxt);
-	printf("Столбец: %d\n", cmaxt);
-	printf("Средняя температура карты: %f\n", avgt); 
-	printf("Количество значений выше среднего: %d\n", biggerthanavg);
-	printf("Строка с максимальным средним: %d\n", maxri);
-	printf("Максимальное выбранной строки: %f\n", maxravg);
+	printf("Максимальная температура: %d\n", max_t);
+	printf("Строка: %d\n", row_max_t);
+	printf("Столбец: %d\n", col_max_t);
+	printf("Средняя температура карты: %f\n", avg_t); 
+	printf("Количество значений выше среднего: %d\n", bigger_than_avg);
+	printf("Строка с максимальным средним: %d\n", max_row_i);
+	printf("Максимальное выбранной строки: %f\n\n", max_row_avg);
 	
-	replace_maxavg((int*)tmatrix, c, maxri, maxravg);
+	replace_max_avg((int*)tmatrix, c, max_row_i, max_row_avg);
 	printf("Карта после замены выбранной строки:\n");
 	print_matrix((int*)tmatrix, r, c);
 
+	int max_diff = find_max_diff((int*)tmatrix, r, c);
+	printf("Максимальная разница соседних температур: %d\n", max_diff);
 	return 0;
 }
