@@ -52,7 +52,19 @@ findmax(int *p, int r, int c, int *pr, int *pc)
 	return *max;
 }
 
+void
+replace_maxavg(int *matrix, int sizeY, int maxri, double maxravg)
+{
+	int trunc_avg = (int)maxravg;
 
+	int *targetrl = matrix + maxri * sizeY; 
+	int *targetrr = targetrl + sizeY;       
+
+	int *p;
+	for (p = targetrl; p < targetrr; p++) {
+		*p = trunc_avg;
+	}
+}
 
 int
 main(void)
@@ -96,6 +108,10 @@ main(void)
 	printf("Количество значений выше среднего: %d\n", biggerthanavg);
 	printf("Строка с максимальным средним: %d\n", maxri);
 	printf("Максимальное выбранной строки: %f\n", maxravg);
+	
+	replace_maxavg((int*)tmatrix, c, maxri, maxravg);
+	printf("Карта после замены выбранной строки:\n");
+	print_matrix((int*)tmatrix, r, c);
 
 	return 0;
 }
