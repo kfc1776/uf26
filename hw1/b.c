@@ -129,7 +129,7 @@ main(void)
 	printf("Средняя температура карты: %f\n", avg_t); 
 	printf("Количество значений выше среднего: %d\n", bigger_than_avg);
 	printf("Строка с максимальным средним: %d\n", max_row_i);
-	printf("Максимальное выбранной строки: %f\n\n", max_row_avg);
+	printf("Среднее выбранной строки: %f\n\n", max_row_avg);
 	
 	replace_max_avg((int*)tmatrix, c, max_row_i, max_row_avg);
 	printf("Карта после замены выбранной строки:\n");
