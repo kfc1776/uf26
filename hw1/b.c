@@ -15,20 +15,26 @@ print_matrix(int *matrix, int sizeX, int sizeY)
 }
 
 double
-avg_matrix(int *matrix, int sizeX, int sizeY)
+avg_matrix(int *matrix, int sizeX, int sizeY, int *p)
 {
 	double sum = 0;
 	int *p1, *p2;
 
-	for (p1 = matrix; p1 < matrix + sizeX * sizeY; p1 += sizeY) {
+	for (p1 = matrix; p1 < matrix + sizeX * sizeY; p1 += sizeY) 
 		for (p2 = p1; p2 < p1 + sizeY; p2++)
 			sum += (double) (*p2);
-	}
+
+	double avg = sum / (double) (sizeX * sizeY);
+
+	for (p1 = matrix; p1 < matrix + sizeX * sizeY; p1 += sizeY)
+		for (p2 = p1; p2 < p1 + sizeY; p2++)
+			if ((double) (*p2) > avg)
+				(*p)++;
 	
-	return sum / (double) (sizeX * sizeY);
+	return avg;
 }
 
-int *
+int 
 findmax(int *p, int r, int c, int *pr, int *pc)
 {
 	int *i, *max = p;
@@ -43,7 +49,7 @@ findmax(int *p, int r, int c, int *pr, int *pc)
 	*pr = (max - p) / c;
 	*pc = (max - p) % c;
 	
-	return max;
+	return *max;
 }
 
 
@@ -51,7 +57,7 @@ findmax(int *p, int r, int c, int *pr, int *pc)
 int
 main(void)
 {
-	int i, j, r, c;
+	int i, j, r, c, counter;
 
 	scanf("%d%d", &r, &c);
 
@@ -62,14 +68,34 @@ main(void)
 			scanf("%d", &tmatrix[i][j]);
 
 	int rmaxt = 0, cmaxt = 0;
-	int *maxt = findmax(&tmatrix[0][0], r, c, &rmaxt, &cmaxt);
+	int biggerthanavg = 0;
+
+	int maxt = findmax(&tmatrix[0][0], r, c, &rmaxt, &cmaxt);
+	double avgt = avg_matrix((int*)tmatrix, r, c, &biggerthanavg);
+
+	int maxri = 0;
+	double currravg, maxravg = -1e9;
+
+	for (i = 0; i < r; i++) {
+		j = 0;
+		
+		currravg = avg_matrix(&tmatrix[i][0], 1, c, &j);
+
+		if (currravg > maxravg) {
+			maxravg = currravg;
+			maxri = i;
+		}
+	}
 
 	printf("Исходная карта:\n");
-	print_matrix(tmatrix, r, c);
-	printf("Максимальная температура: %d\n", *maxt);
+	print_matrix((int*)tmatrix, r, c);
+	printf("Максимальная температура: %d\n", maxt);
 	printf("Строка: %d\n", rmaxt);
 	printf("Столбец: %d\n", cmaxt);
-	printf("Средняя температура карты: %f\n", avg_matrix(tmatrix, r, c)); 
+	printf("Средняя температура карты: %f\n", avgt); 
+	printf("Количество значений выше среднего: %d\n", biggerthanavg);
+	printf("Строка с максимальным средним: %d\n", maxri);
+	printf("Максимальное выбранной строки: %f\n", maxravg);
 
 	return 0;
 }
