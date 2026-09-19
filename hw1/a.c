@@ -52,6 +52,7 @@ sum_between(int *left, int *right)
 void
 find_longest_increasing_segment(int *arr, int size, int **start, int **end)
 {
+	/*
 	*start = arr;
 	*end = arr + 1;
 	int i, max_len = 1;
@@ -68,6 +69,26 @@ find_longest_increasing_segment(int *arr, int size, int **start, int **end)
 			}
 		} else {
 			current_start = &arr[i];
+		}
+	}
+	*/
+	*start = arr;
+	*end = arr + 1;
+	int max_len = 1;
+
+	int *current_start = arr;
+
+	for (int *c = arr + 1; c < arr + size; c++) {
+		if (*c > *(c - 1)) {
+			int current_len = (c - current_start) + 1;
+			
+			if (current_len > max_len) {
+				max_len = current_len;
+				*start = current_start;
+				*end = c + 1;
+			}
+		} else {
+			current_start = c;
 		}
 	}
 }
