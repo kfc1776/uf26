@@ -13,6 +13,20 @@ print_matrix(int *matrix, int sizeX, int sizeY)
 	printf("\n");
 }
 
+int *
+findmax(int *p, int r, int c)
+{
+	int i, max = *p;
+	
+	for (i = 0; i < r * c; i++) 
+		if (*(p + i) > max)
+			max = *(p + i);
+
+	return max;
+}
+
+//
+
 int
 main(void)
 {
@@ -26,7 +40,9 @@ main(void)
 		for (j = 0; j < c; j++)
 			scanf("%d", &tmatrix[i][j]);
 
+	printf("Исходная карта:\n");
 	print_matrix(tmatrix, r, c);
+	printf("Максимальная температура: %d\n", findmax(&tmatrix[0][0], r, c));
 
 	return 0;
 }
