@@ -53,25 +53,26 @@ void
 find_longest_increasing_segment(int *arr, int size, int **start, int **end)
 {
 	/*
-	*start = arr;
-	*end = arr + 1;
-	int i, max_len = 1;
+	 * *start = arr;
+	 * *end = arr + 1;
+	 * int i, max_len = 1;
 
-	int current_len, *current_start = arr;
+	 * int current_len, *current_start = arr;
 
-	for (i = 1; i < size; i++) {
-		if (arr[i] > arr[i - 1]) {
-			current_len = (&arr[i] - current_start) + 1;
-			if (current_len > max_len) {
-				max_len = current_len;
-				*start = current_start;
-				*end = &arr[i] + 1;
-			}
-		} else {
-			current_start = &arr[i];
-		}
-	}
+	 * for (i = 1; i < size; i++) {
+	 * 	if (arr[i] > arr[i - 1]) {
+	 * 		current_len = (&arr[i] - current_start) + 1;
+	 * 		if (current_len > max_len) {
+	 * 			max_len = current_len;
+	 * 			*start = current_start;
+	 * 			*end = &arr[i] + 1;
+	 * 		}
+	 * 	} else {
+	 * 		current_start = &arr[i];
+	 * 	}
+	 * }
 	*/
+
 	*start = arr;
 	*end = arr + 1;
 	int max_len = 1;
