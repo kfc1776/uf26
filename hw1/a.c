@@ -4,10 +4,17 @@
 void
 print_array(int *arr, int size)
 {
-	int i;
-	for (i = 0; i < size; i++) {
-		printf("%d ", arr[i]);
-	}
+	/*
+	 * int i;
+	 * for (i = 0; i < size; i++) {
+	 * 	printf("%d ", arr[i]);
+	 * }
+	 * printf("\n");
+	*/
+
+	for (int *p = arr; p < arr + size; p++)
+		printf("%d ", *p);
+	
 	printf("\n");
 }
 
