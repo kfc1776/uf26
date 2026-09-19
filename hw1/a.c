@@ -10,7 +10,7 @@ print_array(int *arr, int size)
 	 * 	printf("%d ", arr[i]);
 	 * }
 	 * printf("\n");
-	*/
+     */
 
 	for (int *p = arr; p < arr + size; p++)
 		printf("%d ", *p);
@@ -71,7 +71,7 @@ find_longest_increasing_segment(int *arr, int size, int **start, int **end)
 	 * 		current_start = &arr[i];
 	 * 	}
 	 * }
-	*/
+	 */
 
 	*start = arr;
 	*end = arr + 1;
@@ -122,26 +122,32 @@ main(void)
 	int *arr_min = fminmax(arr, &arr[n], 0);
 	int *arr_max = fminmax(arr, &arr[n], 1);
 
+	printf("Исходный массив: \n");
+	print_array(arr, n);
+	printf("\n");
+
 	if (arr_min != NULL && arr_max != NULL) {
-		printf("1.\t%d %p\n", *arr_min, (void*)arr_min);
-		printf("2.\t%d %p\n", *arr_max, (void*)arr_max);
-		printf("3.\t%ld %ld\n", arr_min - arr, arr_max - arr);
-		printf("4.\t%d\n", abs(arr_max - arr_min));
-		printf("5.\t%d\n", sum_between(arr_min, arr_max));
+		 printf("Минимум: %d\n", *arr_min);
+		 printf("Позиция минимума: %ld\n", arr_min - arr);
+		 printf("Максимум: %d\n", *arr_max);
+		 printf("Позиция максимума: %ld\n", arr_max - arr);
+		 printf("Расстояние между минимумом и максимумом: %d\n", abs(arr_max - arr_min));
+		 printf("Сумма элементов между минимумом и максимумом: %d\n", sum_between(arr_min, arr_max));
 	}
-	
+	printf("\n");
+
 	int *segstart = NULL;
 	int *segend = NULL;
 	find_longest_increasing_segment(arr, n, &segstart, &segend);
 
 	int *ptr;
-	printf("6-7.\t");
+	printf("Самый длинный возрастающий участок:\n");
 	for (ptr = segstart; ptr < segend; ptr++)
 		printf("%d ", *ptr);
-	printf("\n");
+	printf("\n\n");
 
 	reverse_segment(segstart, segend);
-	printf("8.\t");
+	printf("Массив после разворота выбранного участка:\n");
 	print_array(arr, n);
 
 	return 0;
