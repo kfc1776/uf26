@@ -1,0 +1,13 @@
+*
+
+!/
+!/*/
+
+!.gitignore
+!LICENSE*
+!README*
+
+!*.c
+!*.cpp
+!*.py
+!*.md
