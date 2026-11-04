@@ -1,13 +1,12 @@
 def bubblesort(a):
-    na = a
     i = 0
-    while i < len(na) - 1:
-        if na[i] > na[i + 1]:
-            na[i], na[i + 1] = na[i + 1], na[i]
+    while i < len(a) - 1:
+        if a[i] > a[i + 1]:
+            a[i], a[i + 1] = a[i + 1], a[i]
             i = 0
         else:
             i += 1
-    return na
+    return a
 
 ia = list(map(int, input().split()))
 print(*bubblesort(ia))
