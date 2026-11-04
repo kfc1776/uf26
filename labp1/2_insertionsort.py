@@ -1,13 +1,12 @@
-# https://colab.research.google.com/drive/1ULH3YEQSQmRpcqgomgli-b80yC35ihSE?usp=sharing
-
-def qs(arr):
-    if len(arr) < 2:
-        return arr
-    pivot = arr[0]
-    l = [x for x in arr[1:] if x < pivot]
-    r = [x for x in arr[1:] if x >= pivot]
-    return qs(l) + [pivot] + qs(r)
-
+def insertionsort(a):
+    for i in range(1, len(a)):
+        k = a[i]
+        j = i - 1
+        while j >= 0 and a[j] > k:
+            a[j + 1] = a[j]
+            j -= 1
+        a[j + 1] = k
 
 ia = list(map(int, input().split()))
-print(*qs(ia))
+insertionsort(ia)
+print(*ia)
