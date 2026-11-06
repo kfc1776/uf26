@@ -26,8 +26,7 @@ def matrix_input(m, n, ab):
 
 
 def matrix_output(matrix, m, n):
-   if cellwidth is None:
-        cellwidth = max(len(str(j)) for i in matrix for j in i)
+    cellwidth = max(len(str(j)) for i in matrix for j in i)
 
     for i in range(m):
         for j in range(n):
@@ -294,7 +293,7 @@ while True:
                 if C is not None:
                     matrix_output(C, len(C), len(C[0]))
                 else:
-                    print("Матрица не квадратная")
+                    print("Матрицу A нельзя умножить на B")
             else:
                 print("Матрица A или B пустая или не прямоугольная")
         case 8:
