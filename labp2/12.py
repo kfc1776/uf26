@@ -109,6 +109,94 @@ def multiply_matrices(A, B):
     return C
 
 
+def determinant(matrix):
+    if len(matrix) != len(matrix[0]):
+        print("Матрица не квадратная")
+        return None
+
+    A = [[int(x) for x in r] for r in matrix]
+    
+    det = 1
+    
+    for i in range(len(matrix)):
+        pivot_r = i
+        for k in range(i + 1, len(matrix)):
+            if abs(A[k][i]) > abs(A[pivot_r][i]):
+                pivot_r = k
+                
+        if abs(A[pivot_r][i]) < 1e-9:
+            return 0
+            
+        if pivot_r != i:
+            A[i], A[pivot_r] = A[pivot_r], A[i]
+            det *= -1
+            
+        det *= A[i][i]
+        
+        for k in range(i + 1, len(matrix)):
+            factor = A[k][i] / A[i][i]
+            for j in range(i, len(matrix)):
+                A[k][j] -= factor * A[i][j]
+                
+    return round(det, 9)
+
+
+def inverse_matrix(A, eps=1e-12):
+    if len(A) != len(A[0]):
+        print("Матрица не квадратная")
+        return None
+
+    E = identity_matrix(len(A))
+
+    AE = []
+    for i in range(len(A)):
+        AE.append(A[i] + E[i])
+    
+    for i in range(len(A)):
+            pivot_r = i
+            for r in range(i + 1, len(A)):
+                if abs(AE[r][i]) > abs(AE[pivot_r][i]):
+                    pivot_r = r
+                    
+            AE[i], AE[pivot_r] = AE[pivot_r], AE[i]
+    
+            pivot = AE[i][i]
+            
+            if abs(pivot) < eps:
+                print("Обратной матрицы не существует")
+                return None
+    
+            AE[i] = [x / pivot for x in AE[i]]
+    
+            for r in range(len(A)):
+                if r != i:
+                    factor = AE[r][i]
+                    AE[r] = [AE[r][j] - factor * AE[i][j] for j in range(2 * len(A))]
+    
+    inv_A = [R[len(A):] for R in AE]
+
+    return inv_A
+
+
+def identity_matrix(n):
+    E = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        E[i][i] = 1.0
+    return E
+
+
+def is_identity(matrix, eps=1e-12):
+    n = len(matrix)
+    for i in range(n):
+        for j in range(len(matrix[0])):
+            expected = 1.0 if i == j else 0.0
+            if abs(matrix[i][j] - expected) >= eps:
+                return False
+    return True
+
+
+
+
 A = []
 B = []
 
@@ -200,12 +288,8 @@ while True:
             if matrix_validity(A if aorb == "A" else B):
                 print("Введите скаляр")
                 k = int(input())
-                if aorb == "A":
-                    print("k * A =")
-                    C = multiply_by_scalar(A, k)
-                elif aorb == "B":
-                    print("k * B =")
-                    C = multiply_by_scalar(B, k)
+                print(f"k * {aorb} =")
+                C = multiply_by_scalar(A if aorb == "A" else B, k)
                 lmeC = len(str(findmax_matrix(C)))
                 matrix_output(C, len(C), len(C[0]), lmeC)
             else:
@@ -213,10 +297,7 @@ while True:
         case 6:
             aorb = matrix_select()
             if matrix_validity(A if aorb == "A" else B):
-                if aorb == "A":
-                    C = transpose(A)
-                elif aorb == "B":
-                    C = transpose(B)
+                C = transpose(A if aorb == "A" else B)
                 lmeC = len(str(findmax_matrix(C)))
                 matrix_output(C, len(C), len(C[0]), lmeC)
             else:
@@ -229,17 +310,63 @@ while True:
                     matrix_output(C, len(C), len(C[0]), lmeC)
             else:
                 print("Матрица A или B пустая или не прямоугольная")
-#        case 8:
-            #aorb = matrix_select()
-            #if matrix
+        case 8:
+            aorb = matrix_select()
+            if matrix_validity(A if aorb == "A" else B):
+                C = determinant(A if aorb == "A" else B)
+                if C == None:
+                    continue
+                lmeC = len(str(findmax_matrix(C)))
+                matrix_output(C, len(C), len(C[0]), lmeC)
+            else:
+                print(f"Матрица {aorb} пустая или не прямоугольная")
+        case 9:
+            aorb = matrix_select()
+            if matrix_validity(A if aorb == "A" else B):
+                C_raw = inverse_matrix(A if aorb == "A" else B)
+                C = [[round(y, 9) for y in x] for x in C_raw]
+                if not is_identity(multiply_matrices(A if aorb == "A" else B, C)):
+                    print("Не удалось найти обратную матрицу")
+                    continue
+                leC = []
+                for i in range(len(C)):
+                    for j in range(len(C[0])):
+                        leC.append(len(str(C[i][j])))
+                lmeC = max(leC)
+                matrix_output(C, len(C), len(C[0]), lmeC)
+            else:
+                print(f"Матрица {aorb} пустая или не прямоугольная")
+        case 10:
+            aorb = matrix_select()
+            X = A if aorb == "A" else B
+            if matrix_validity(X):
+                min_X = X[0][0]
+                max_X = X[0][0]
+                sum_X = 0
+                
+                row_sums_X = []
+                col_sums_X = []
+                for i in range(len(X)):
+                    for j in range(len(X[0])):
+                        min_X = X[i][j] if X[i][j] < min_X else min_X
+                        max_X = X[i][j] if X[i][j] > max_X else max_X
+                        sum_X += X[i][j]
+                    row_sums_X.append(sum(X[i]))
+                
+                X_T = transpose(X)
+                
+                for i in range(len(X_T)):
+                    col_sums_X.append(sum(X_T[i]))
+                
+                print(f"Размер: {len(X)} x {len(X[0])}")
+                print("Минимальный элемент:", min_X)
+                print("Максимальный элемент:", max_X)
+                print("Сумма элементов:", sum_X)
+                print("Среднее значение:", sum_X / (len(X) * len(X[0])))
+                print()
+                print("Суммы строк:", ', '.join(map(str, row_sums_X)))
+                print("Суммы столбцов:", ', '.join(map(str, col_sums_X)))
 
 
-
-# не вся логика в мэйне
-# все операции в отдельной функции
-# меню должно работать в цикле до выбора 0
-# некорректный номер пункта не завершает программу
-# ошибки обрабатываются без аварийного завершения
-# перед каждой операцией проверяются условия применимости
-# результаты вычислений выводятся в удобном табличном формате
-# вычислительные функции по возможности не содержат input() и print(), ввод/вывод рекомендуется разделить
+            else:
+                print(f"Матрица {aorb} пустая или не прямоугольная")
