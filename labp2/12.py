@@ -57,7 +57,7 @@ def findmax_matrix(matrix):
     m = matrix[0][0]
     for i in matrix:
         for j in i:
-            if j > maxelementC:
+            if j > m:
                 m = j
     return m
 
@@ -265,7 +265,7 @@ while True:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = add_matrices(A, B)
-                    maxelementC = findmax_element(C)
+                    maxelementC = findmax_matrix(C)
                     print("A + B =")
                     matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
                 else:
@@ -276,7 +276,7 @@ while True:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = subtract_matrices(A, B)
-                    maxelementC = findmax_element(C)
+                    maxelementC = findmax_matrix(C)
                     print("A - B =")
                     matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
                 else:
@@ -316,8 +316,7 @@ while True:
                 C = determinant(A if aorb == "A" else B)
                 if C == None:
                     continue
-                lmeC = len(str(findmax_matrix(C)))
-                matrix_output(C, len(C), len(C[0]), lmeC)
+                print(C)
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
         case 9:
