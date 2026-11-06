@@ -100,7 +100,7 @@ def multiply_matrices(A, B):
             c = 0
             for k in range(len(A[0])):
                 c += A[i][k] * B[k][j]
-                C[i][j] = c
+            C[i][j] = c
     return C
 
 
