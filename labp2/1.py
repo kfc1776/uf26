@@ -1,16 +1,19 @@
 def matrix_input(m, n):
     global maxelement
-    matrix = [[0] * m] * n
+
+    matrix = [[0] * n for _ in range(m)]
 
     for i in range(m):
         try:
-            matrix[i] = list(map(int, input().split()))
+            row = list(map(int, input().split()))
         except ValueError:
             print("В строке должны быть только целые числа")
             exit(1)
 
-        if len(matrix[i]) != n:
+        if len(row) != n:
             raise ValueError(f"В строке должно быть {n} элементов")
+
+        matrix[i] = row
 
         for j in range(n):
             if matrix[i][j] > maxelement:
@@ -36,5 +39,5 @@ maxelement = 0
 matrix = matrix_input(m, n)
 lme = len(str(maxelement))
 
-print()
+print(matrix)
 matrix_output(matrix, m, n, lme)

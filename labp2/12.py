@@ -1,26 +1,21 @@
-# TODO Матрицы вводятся, но не так, как нужно. Если ввести матрицу вот так:
-#    1 2 3
-#    4 5 6
-#    То на самом деле она будет равна [[1, 2, 3], [4, 5, 6], [0, 0]].
-# TODO В 3 и 4 случае программа в любом случае ошибочно считает матрицу невалидной.
-# TODO доделать проект полностью... 
-
 def matrix_input(m, n, ab):
     global maxelementA
     global maxelementB
 
-    matrix = [[0] * m] * n
+    matrix = [[0] * n for _ in range(m)]
 
     print("Введите строки матрицы, записывая каждое число через пробел и разделяя строки символом переноса строки")
     for i in range(m):
         try:
-            matrix[i] = list(map(int, input().split()))
+            row = list(map(int, input().split()))
         except ValueError:
             print("В строке должны быть только целые числа")
             exit(1)
 
         if len(matrix[i]) != n:
             raise ValueError(f"В строке должно быть {n} элементов")
+
+        matrix[i] = row
 
         for j in range(n):
             if ab == 1:
@@ -58,6 +53,15 @@ def matrix_validity(matrix):
     return 1
 
 
+def findmax_matrix(matrix):
+    m = matrix[0][0]
+    for i in matrix:
+        for j in i:
+            if j > maxelementC:
+                m = j
+    return m
+
+
 def add_matrices(A, B):
     C = [[0] * len(A[0]) for _ in range(len(A))]
     for i in range(len(A)):
@@ -71,6 +75,30 @@ def subtract_matrices(A, B):
     for i in range(len(A)):
         for j in range(len(A[0])):
             C[i][j] = A[i][j] - B[i][j]
+    return C
+
+
+def multiply_by_scalar(matrix, scalar):
+    B = [[0] * len(matrix[0]) for _ in range(len(matrix))]
+    for i in range(len(B)):
+        for j in range(len(B[0])):
+            B[i][j] = matrix[i][j] * scalar
+    return B
+
+
+def multiply_matrices(A, B):
+    if len(A[0]) != len(B):
+        print("Матрицу A нельзя умножить на B")
+        return []
+
+    C = [[0] * len(B[0]) for _ in range(len(A))]
+
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            c = 0
+            for k in range(len(A[0])):
+                c += A[i][k] * B[k][j]
+                C[i][j] = c
     return C
 
 
@@ -94,7 +122,7 @@ while True:
 2. Вывести матрицу
 3. Сложить две матрицы (A + B)
 4. Вычесть две матрицы (A - B)
-5. Умножить матрицу на число (k * A)
+5. Умножить матрицу на число
 6. Транспонировать матрицу
 7. Умножить две матрицы
 8. Найти определитель
@@ -146,24 +174,39 @@ while True:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = add_matrices(A, B)
+                    maxelementC = findmax_element(C)
                     print("A + B =")
-                    matrix_output(C)
+                    matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
                 else:
                     print("Размеры матриц A и B не совпадают")
             else:
-                print("Ни одна из матриц A и B не должна быть пустой")
-                print(A, B) # diag
+                print("Ни одна из матриц A и B не должна быть пустой или иметь пустые \"ячейки\"")
         case 4:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = subtract_matrices(A, B)
+                    maxelementC = findmax_element(C)
                     print("A - B =")
-                    matrix_output(C)
+                    matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
                 else:
                     print("Размеры матриц A и B не совпадают")
             else:
-                print("Ни одна из матриц A и B не должна быть пустой")
-                print(A, B) # diag
+                print("Ни одна из матриц A и B не должна быть пустой или иметь пустые \"ячейки\"")
+        case 5:
+            aorb = matrix_select()
+            if matrix_validity(aorb):
+                print("Введите скаляр")
+                k = int(input())
+                if aorb == "A":
+                    print("k * A =")
+                    C = multiply_by_scalar(A, k)
+                    matrix_output(C)
+                if aorb == "B":
+                    print("k * B =")
+                    C = multiply_by_scalar(B, k)
+                    matrix_output(C)
+                else:
+                    raise Exception("Что-то пошло не так...")
 
 
 # не вся логика в мэйне
