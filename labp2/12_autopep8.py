@@ -11,14 +11,18 @@ def matrix_input(m, n, ab):
 
     print("Введите строки матрицы, записывая каждое число через пробел и разделяя строки символом переноса строки")
     for i in range(m):
-        try:
-            row = list(map(int, input().split()))
-        except ValueError:
-            print("В строке должны быть только целые числа")
-            exit(1)
+        while True:
+            try:
+                row = list(map(int, input().split()))
+            except ValueError:
+                print("В строке должны быть только целые числа")
+                continue
 
-        if len(row) != n:
-            raise ValueError(f"В строке должно быть {n} элементов")
+            if len(row) != n:
+                print(f"В строке должно быть {n} чисел")
+                continue
+
+            break
 
         matrix[i] = row
 
@@ -318,7 +322,7 @@ while True:
                 if not is_identity(
                         multiply_matrices(
                             A if aorb == "A" else B,
-                            C)):
+                            C_raw), eps=1e-9):
                     print("Не удалось найти обратную матрицу")
                     continue
 
@@ -360,3 +364,5 @@ while True:
                 print("Суммы столбцов:", ', '.join(map(str, col_sums_X)))
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
+        case _:
+            print("Такой операции нет")
