@@ -1,6 +1,14 @@
+def read_int():
+    while True:
+        try:
+            return int(input())
+        except ValueError:
+            print("Введите целое число")
+
+
 def matrix_input(m, n, ab):
-    global maxelementA
-    global maxelementB
+    # global maxelementA
+    # global maxelementB
 
     matrix = [[0] * n for _ in range(m)]
 
@@ -12,11 +20,12 @@ def matrix_input(m, n, ab):
             print("В строке должны быть только целые числа")
             exit(1)
 
-        if len(matrix[i]) != n:
+        if len(row) != n:
             raise ValueError(f"В строке должно быть {n} элементов")
 
         matrix[i] = row
 
+        """
         for j in range(n):
             if ab == 1:
                 if matrix[i][j] > maxelementA:
@@ -24,11 +33,15 @@ def matrix_input(m, n, ab):
             if ab == 2:
                 if matrix[i][j] > maxelementB:
                     maxelementB = matrix[i][j]
+        """
 
     return matrix
 
 
-def matrix_output(matrix, m, n, cellwidth):
+def matrix_output(matrix, m, n)  # , cellwidth):
+   if cellwidth is None:
+        cellwidth = max(len(str(j)) for i in matrix for j in i)
+
     for i in range(m):
         for j in range(n):
             print(str(matrix[i][j]).ljust(cellwidth, " "), end=" ")
@@ -47,12 +60,15 @@ def matrix_select():
 def matrix_validity(matrix):
     if matrix == [] or not any(matrix):
         return 0
+
     for i in range(1, len(matrix)):
         if len(matrix[i]) != len(matrix[0]):
             return 0
+
     return 1
 
 
+"""
 def findmax_matrix(matrix):
     m = matrix[0][0]
     for i in matrix:
@@ -60,6 +76,7 @@ def findmax_matrix(matrix):
             if j > m:
                 m = j
     return m
+"""
 
 
 def add_matrices(A, B):
@@ -90,7 +107,7 @@ def transpose(matrix):
     return [
         [matrix[i][j] for i in range(len(matrix))]
         for j in range(len(matrix[0]))
-    ]
+        ]
 
 
 def multiply_matrices(A, B):
@@ -172,7 +189,7 @@ def inverse_matrix(A, eps=1e-12):
             if r != i:
                 factor = AE[r][i]
                 AE[r] = [AE[r][j] - factor * AE[i][j]
-                         for j in range(2 * len(A))]
+                    for j in range(2 * len(A))]
 
     inv_A = [R[len(A):] for R in AE]
 
@@ -199,8 +216,8 @@ def is_identity(matrix, eps=1e-12):
 A = []
 B = []
 
-maxelementA = 0
-maxelementB = 0
+# maxelementA = 0
+# maxelementB = 0
 
 mA = 0
 nA = 0
@@ -224,7 +241,7 @@ while True:
 10. Вывести характеристики матрицы
 0. Завершить программу
              """)
-    sel = int(input())
+    sel = read_int()
 
     match sel:
         case 0:
@@ -233,52 +250,54 @@ while True:
             aorb = matrix_select()
             print(f"Введите числа m{aorb} и n{aorb} через строку")
             if aorb == "A":
-                mA = int(input())
-                nA = int(input())
+                mA = read_int()
+                nA = read_int()
+
                 if mA <= 0 or nA <= 0:
                     print("Числа, равные количествам строк и столбцов, должны быть > 0")
                     mA, nA = 0, 0
                     continue
+
                 A = matrix_input(mA, nA, 1)
                 print("Введена матрица A")
             elif aorb == "B":
-                mB = int(input())
-                nB = int(input())
+                mB = read_int()
+                nB = read_int()
+
                 if mB <= 0 or nB <= 0:
                     print("Числа, равные количествам строк и столбцов, должны быть > 0")
                     mB, nB = 0, 0
                     continue
-                B = matrix_input(mB, nB, 1)
+
+                B = matrix_input(mB, nB, 2)
                 print("Введена матрица B")
         case 2:
             aorb = matrix_select()
             if matrix_validity(A if aorb == "A" else B):
                 if aorb == "A":
-                    matrix_output(A, mA, nA, len(str(maxelementA)))
+                    matrix_output(A, mA, nA)  # , len(str(maxelementA)))
                 elif aorb == "B":
-                    matrix_output(B, mB, nB, len(str(maxelementB)))
+                    matrix_output(B, mB, nB)  # , len(str(maxelementB)))
             else:
                 print(f"Матрица {aorb} пустая или не является прямоугольной")
-
         case 3:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = add_matrices(A, B)
-                    maxelementC = findmax_matrix(C)
+                    # maxelementC = findmax_matrix(C)
                     print("A + B =")
-                    matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
+                    matrix_output(C, len(C), len(C[0]))  # , len(str(maxelementC)))
                 else:
                     print("Размеры матриц A и B не совпадают")
             else:
-                print(
-                    "Ни одна из матриц A и B не должна быть пустой или иметь пустые \"ячейки\"")
+                print("Матрица A или B пустая или не прямоугольная")
         case 4:
             if matrix_validity(A) and matrix_validity(B):
                 if len(A) == len(B) and len(A[0]) == len(B[0]):
                     C = subtract_matrices(A, B)
-                    maxelementC = findmax_matrix(C)
+                    # maxelementC = findmax_matrix(C)
                     print("A - B =")
-                    matrix_output(C, len(C), len(C[0]), len(str(maxelementC)))
+                    matrix_output(C, len(C), len(C[0]))  # , len(str(maxelementC)))
                 else:
                     print("Размеры матриц A и B не совпадают")
             else:
@@ -287,27 +306,29 @@ while True:
             aorb = matrix_select()
             if matrix_validity(A if aorb == "A" else B):
                 print("Введите скаляр")
-                k = int(input())
+                k = read_int()
+
                 print(f"k * {aorb} =")
                 C = multiply_by_scalar(A if aorb == "A" else B, k)
-                lmeC = len(str(findmax_matrix(C)))
-                matrix_output(C, len(C), len(C[0]), lmeC)
+
+                # lmeC = len(str(findmax_matrix(C)))
+                matrix_output(C, len(C), len(C[0]))  # , lmeC)
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
         case 6:
             aorb = matrix_select()
             if matrix_validity(A if aorb == "A" else B):
                 C = transpose(A if aorb == "A" else B)
-                lmeC = len(str(findmax_matrix(C)))
-                matrix_output(C, len(C), len(C[0]), lmeC)
+                # lmeC = len(str(findmax_matrix(C)))
+                matrix_output(C, len(C), len(C[0]))  # , lmeC)
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
         case 7:
             if matrix_validity(A) and matrix_validity(B):
                 C = multiply_matrices(A, B)
                 if C != []:
-                    lmeC = len(str(findmax_matrix(C)))
-                    matrix_output(C, len(C), len(C[0]), lmeC)
+                    # lmeC = len(str(findmax_matrix(C)))
+                    matrix_output(C, len(C), len(C[0]))  # , lmeC)
             else:
                 print("Матрица A или B пустая или не прямоугольная")
         case 8:
@@ -323,24 +344,34 @@ while True:
             aorb = matrix_select()
             if matrix_validity(A if aorb == "A" else B):
                 C_raw = inverse_matrix(A if aorb == "A" else B)
-                C = [[round(y, 9) for y in x] for x in C_raw]
+                if C_raw is None:
+                    continue
+                C = [[round(y, 12) for y in x] for x in C_raw]
+
                 if not is_identity(
-                    multiply_matrices(
-                        A if aorb == "A" else B,
-                        C)):
+    multiply_matrices(
+        A if aorb == "A" else B,
+         C)):
                     print("Не удалось найти обратную матрицу")
                     continue
+
+                """
                 leC = []
                 for i in range(len(C)):
                     for j in range(len(C[0])):
                         leC.append(len(str(C[i][j])))
+
                 lmeC = max(leC)
                 matrix_output(C, len(C), len(C[0]), lmeC)
+                """
+                matrix_output(C, len(C), len(C[0]))
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
         case 10:
             aorb = matrix_select()
+
             X = A if aorb == "A" else B
+
             if matrix_validity(X):
                 min_X = X[0][0]
                 max_X = X[0][0]
@@ -348,6 +379,7 @@ while True:
 
                 row_sums_X = []
                 col_sums_X = []
+
                 for i in range(len(X)):
                     for j in range(len(X[0])):
                         min_X = X[i][j] if X[i][j] < min_X else min_X
@@ -368,6 +400,5 @@ while True:
                 print()
                 print("Суммы строк:", ', '.join(map(str, row_sums_X)))
                 print("Суммы столбцов:", ', '.join(map(str, col_sums_X)))
-
             else:
                 print(f"Матрица {aorb} пустая или не прямоугольная")
