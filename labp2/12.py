@@ -1,3 +1,19 @@
+# СМ. 12_autopep8.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def read_int():
     while True:
         try:
