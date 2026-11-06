@@ -36,7 +36,7 @@ def matrix_output(matrix, m, n, cellwidth):
 
 
 def matrix_select():
-    print("Какая матрица вводится -- A или B? Введите либо A, либо B (с учётом регистра)")
+    print("Какая матрица -- A или B? Введите либо A, либо B (с учётом регистра)")
     aorb = input()
     while aorb != "A" and aorb != "B":
         print("Некорректный ввод")
@@ -86,6 +86,13 @@ def multiply_by_scalar(matrix, scalar):
     return B
 
 
+def transpose(matrix):
+    return [
+            [matrix[i][j] for i in range(len(matrix))]
+             for j in range(len(matrix[0]))
+             ]
+
+
 def multiply_matrices(A, B):
     if len(A[0]) != len(B):
         print("Матрицу A нельзя умножить на B")
@@ -124,7 +131,7 @@ while True:
 4. Вычесть две матрицы (A - B)
 5. Умножить матрицу на число
 6. Транспонировать матрицу
-7. Умножить две матрицы
+7. Умножить две матрицы (A * B)
 8. Найти определитель
 9. Найти обратную матрицу
 10. Вывести характеристики матрицы
@@ -156,17 +163,13 @@ while True:
                     continue
                 B = matrix_input(mB, nB, 1)
                 print("Введена матрица B")
-            else:
-                raise Exception("Что-то пошло не так...")
         case 2:
             aorb = matrix_select()
-            if matrix_validity(aorb):
+            if matrix_validity(A if aorb == "A" else B):
                 if aorb == "A":
                     matrix_output(A, mA, nA, len(str(maxelementA)))
                 elif aorb == "B":
                     matrix_output(B, mB, nB, len(str(maxelementB)))
-                else:
-                    raise Exception("Что-то пошло не так...")
             else:
                 print(f"Матрица {aorb} пустая или не является прямоугольной")
                 
@@ -191,22 +194,45 @@ while True:
                 else:
                     print("Размеры матриц A и B не совпадают")
             else:
-                print("Ни одна из матриц A и B не должна быть пустой или иметь пустые \"ячейки\"")
+                print("Матрица A или B пустая или не прямоугольная")
         case 5:
             aorb = matrix_select()
-            if matrix_validity(aorb):
+            if matrix_validity(A if aorb == "A" else B):
                 print("Введите скаляр")
                 k = int(input())
                 if aorb == "A":
                     print("k * A =")
                     C = multiply_by_scalar(A, k)
-                    matrix_output(C)
-                if aorb == "B":
+                elif aorb == "B":
                     print("k * B =")
                     C = multiply_by_scalar(B, k)
-                    matrix_output(C)
-                else:
-                    raise Exception("Что-то пошло не так...")
+                lmeC = len(str(findmax_matrix(C)))
+                matrix_output(C, len(C), len(C[0]), lmeC)
+            else:
+                print(f"Матрица {aorb} пустая или не прямоугольная")
+        case 6:
+            aorb = matrix_select()
+            if matrix_validity(A if aorb == "A" else B):
+                if aorb == "A":
+                    C = transpose(A)
+                elif aorb == "B":
+                    C = transpose(B)
+                lmeC = len(str(findmax_matrix(C)))
+                matrix_output(C, len(C), len(C[0]), lmeC)
+            else:
+                print(f"Матрица {aorb} пустая или не прямоугольная")
+        case 7:
+            if matrix_validity(A) and matrix_validity(B): 
+                C = multiply_matrices(A, B)
+                if C != []:
+                    lmeC = len(str(findmax_matrix(C)))
+                    matrix_output(C, len(C), len(C[0]), lmeC)
+            else:
+                print("Матрица A или B пустая или не прямоугольная")
+#        case 8:
+            #aorb = matrix_select()
+            #if matrix
+
 
 
 # не вся логика в мэйне
